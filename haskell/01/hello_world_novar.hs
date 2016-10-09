@@ -5,6 +5,6 @@ prompt = do
   hFlush stdout
   getLine
 
-messageFor name = "Hello, " ++ name ++ ", nice to meet you!"
+messageFor = fmap ("Hello, " ++) (++ ", nice to meet you!")
 
 main = fmap messageFor prompt >>= putStrLn
