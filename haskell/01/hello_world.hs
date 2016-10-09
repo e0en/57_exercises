@@ -1,1 +1,1 @@
-putStr "What is your name?"
+main = putStr "What is your name?"
