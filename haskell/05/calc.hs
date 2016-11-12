@@ -1,13 +1,31 @@
 import System.IO
 import Data.List
 
-prompt q = do
+ask q f = do
     putStr (q ++ " ")
     hFlush stdout
-    getLine
+    f
+
+prompt q = ask q getLine
+
+getInt = do
+    hSetEcho stdin False
+    hSetBuffering stdin NoBuffering
+    n <- getIntRec ""
+    hSetEcho stdin True
+    return n
+
+getIntRec s = do
+    c <- getChar
+    if c == '\n' || (c >= '0' && c <= '9')
+    then do
+        putChar c
+        hFlush stdout
+        if c == '\n' then return s else getIntRec (s ++ [c])
+    else getIntRec s
 
 intPrompt q = do
-    nStr <- prompt q
+    nStr <- ask q getInt
     return (read nStr :: Int)
 
 printCalc op sig = \x y ->
