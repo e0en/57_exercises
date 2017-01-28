@@ -2,6 +2,26 @@ import System.IO
 import Data.Maybe
 import Data.List
 
+data Unit = Meter | Feet
+data Length = Length Float Unit
+data Area = Area Float Unit
+
+instance Show Unit where
+    show Meter = "meter"
+    show Feet = "feet"
+
+instance Show Length where
+    show (Length v u) = (show v) ++ " " ++ (show u)
+
+instance Show Area where
+    show (Area v u) = (show v) ++ " square " ++ (show u)
+
+feetSqInMeterSq = 0.09290304 :: Float
+
+convertArea :: Area -> Unit -> Area
+convertArea (Area v Feet) Meter = Area (v * feetSqInMeterSq) Meter
+convertArea (Area v Meter) Feet = Area (v / feetSqInMeterSq) Feet
+convertArea a u = a
 
 putStrF s = do
     putStr s
@@ -31,35 +51,25 @@ promptInteger q = do
     nStr <- ask q getInteger
     return (read nStr :: Integer)
 
-promptList :: String -> [String] -> IO String
-promptList q l = do
+promptUnit :: String -> IO Unit
+promptUnit q = do
     putStrF (q ++ " ")
     s <- getLine
-    if isJust $ find ((==) s) l
-    then
-        return s
-    else do
+    case s of
+      "meter" -> return Meter
+      "feet" -> return Feet
+      _ -> do
         putStr "Wrong input, "
-        promptList q l
-
-
-addUnit v u = (show v) ++ " " ++ u
-
-area x y = fromIntegral $ x * y
-
-sqMeterPerSqFeet = 0.09290304 :: Float
-
-sqFeetToSqMeter sqf = (fromInteger sqf) * sqMeterPerSqFeet
+        promptUnit q
 
 main = do
-    u <- promptList "Choose your unit (feet/meters)" ["feet", "meters"]
-    l <- promptInteger $ "What is the length of the room in " ++ u ++ "?"
-    w <- promptInteger $ "What is the width of the room in " ++ u ++ "?"
-    let a = area l w
-    putStrLn $ "You entered dimensions of " ++ (addUnit l u) ++ " by " ++ (addUnit w u)
-    putStrLn "The area is"
-    putStrLn $ (show a) ++ " square " ++ u
-    if u == "meter" then
-        putStrLn $ (show $ a / sqMeterPerSqFeet) ++ " square feet"
-    else
-        putStrLn $ (show $ a * sqMeterPerSqFeet) ++ " square meters"
+    u <- promptUnit "Choose your unit (feet/meter)"
+    w <- promptInteger $ "What is the width of the room in " ++ (show u) ++ "?"
+    h <- promptInteger $ "What is the height of the room in " ++ (show u) ++ "?"
+    let lw = Length (fromInteger w) u
+    let lh = Length (fromInteger h) u
+    putStrLn $ "You entered dimensions of " ++ (show lw) ++ " by " ++ (show lh)
+    let area = Area (fromInteger $ w * h) u
+    putStrLn $ "The area is " 
+    putStrLn $ (show $ convertArea area Meter)
+    putStrLn $ (show $ convertArea area Feet)
