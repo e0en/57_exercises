@@ -5,32 +5,24 @@ putStrF s = do
     putStr s
     hFlush stdout
 
-ask q f = do
+ask q = do
     putStrF (q ++ " ")
-    f
+    getLine
 
-numPattern = "^[-+]?[0-9]+\\.?[0-9]*$"
-
-getNum = do
-    hSetBuffering stdin NoBuffering
-    n <- getIntegerRec ""
-    return n
+numPattern = "^-?[0-9]+\\.?[0-9]*$"
 
 bottlesPerSqMeter = 9.0
 calcPaintBottleCount area = ceiling $ (fromIntegral area) / bottlesPerSqMeter
 
-getIntegerRec s = do
-    c <- getChar
-    if c == '\n' || (c >= '0' && c <= '9')
-    then do
-        putChar c
-        hFlush stdout
-        if c == '\n' then return s else getIntegerRec (s ++ [c])
-    else getIntegerRec s
-
-promptInteger q = do
-    nStr <- ask q getNum
-    return (read nStr :: Integer)
+promptPattern :: String -> String -> IO String
+promptPattern q p = do
+    nStr <- ask q
+    if nStr =~ p :: Bool
+    then
+        return nStr
+    else
+        promptPattern q p
 
 main = do
-    putStrLn "Hello, world!"
+    i <- promptPattern "Number!" numPattern
+    putStrLn $ show (read i :: Int)
