@@ -1,16 +1,10 @@
 #!/usr/bin/env python
 # -*- coding: utf-8 -*-
+from prompt import int_input
+
+
 def heart_rate(age, resting_rate, intensity):
     return (((220 - age) - resting_rate) * intensity) + resting_rate
-
-
-def int_input(prompt):
-    while True:
-        result = input(prompt)
-        if result.isnumeric():
-            return int(result)
-        else:
-            print("Input must be an integer.")
 
 
 resting_rate = int_input("Enter your resting rate: ")
