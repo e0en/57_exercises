@@ -4,7 +4,7 @@ import os
 import sqlite3
 
 
-def print_records(records, key_order):
+def print_records(records, key_order, sep='| '):
     key_lengths = {}
     for k in key_order:
         length = len(k)
@@ -13,12 +13,12 @@ def print_records(records, key_order):
                 length = max(length, len(r[k]))
         key_lengths[k] = length
     
-    header = " | ".join([f"{k: <{key_lengths[k]}}" for k in key_order])
-    seperator = "-|-".join(["-" * key_lengths[k] for k in key_order])
+    header = f" {sep}".join([f"{k: <{key_lengths[k]}}" for k in key_order])
+    bar = f"-{sep.replace(' ', '-')}".join(["-" * key_lengths[k] for k in key_order])
     body = []
     for r in records:
-        body += [" | ".join([f"{r[k]: <{key_lengths[k]}}" for k in key_order])]
-    return "\n".join([header, seperator] + body)
+        body += [f" {sep}".join([f"{r[k]: <{key_lengths[k]}}" for k in key_order])]
+    return "\n".join([header, bar] + body)
 
 
 def init_db(filename):
