@@ -3,12 +3,13 @@
 from getpass import getpass
 from bcrypt import gensalt, hashpw, checkpw
 
-SALT = gensalt()
-PASSWORD = hashpw(b"abc$123", SALT)
 
-password = getpass("What is the password: ").encode("utf-8")
+SALT = gensalt()
+PASSWORD = hashpw(b'abc$123', SALT)
+
+password = getpass('What is the password: ').encode('utf-8')
 
 if checkpw(password, PASSWORD):
-    print("That password is incorrect.")
+    print('Welcome!')
 else:
-    print("Welcome!")
+    print('That password is incorrect.')
