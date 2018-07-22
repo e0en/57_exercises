@@ -1,3 +1,4 @@
 bcrypt
 pyyaml
 requests
+sanic
