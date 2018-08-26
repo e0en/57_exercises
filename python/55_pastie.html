@@ -1,0 +1,21 @@
+<!doctype html>
+<html lang=en>
+<head>
+<meta charset=utf-8>
+<title>Pastie clone</title>
+<link rel="stylesheet" type="text/css" href="s/55_pastie.css" />
+<script src="s/55_pastie.js" type="text/javascript"></script>
+</head>
+<body>
+    <form action="/document.json" method="post"
+      {% if not edit %} style="display: none;" {% endif %}>
+        <p>
+            <label for="content">Text</label>
+            <textarea name="content" autofocus>{{ content }}</textarea>
+        </p>
+        <p><input type="submit" value="save" /></p>
+    </form>
+    <pre {% if edit %} style="display: none;" {% endif %}>{{ content }}</pre>
+    <button type="button" {% if edit %} style="display: none;" {% endif %}>edit</button>
+</body>
+</html>
